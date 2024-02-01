@@ -9,6 +9,11 @@ public class PlayerMove : MonoBehaviour
 
     Rigidbody2D rb2D;
 
+    public bool betterJump = false;
+
+    public float fallMultiplier = 2.5f; // Corregí el valor del fallMultiplier
+    public float lowJumpMultiplier = 2f; // Corregí el valor del lowJumpMultiplier
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +21,7 @@ public class PlayerMove : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetKey("d") || Input.GetKey("right"))
         {
@@ -34,6 +39,18 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetKey("space") && CheckGround.isGrounded)
         {
             rb2D.velocity = new Vector2(rb2D.velocity.x, jumpSpeed);
+        }
+
+        if (betterJump)
+        {
+            if (rb2D.velocity.y < 0)
+            {
+                rb2D.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime; // Cambié Physic a Physics2D
+            }
+            else if (rb2D.velocity.y > 0 && !Input.GetKey("space"))
+            {
+                rb2D.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime; // Cambié Physic a Physics2D
+            }
         }
     }
 }
